@@ -471,14 +471,121 @@ ssize_t psu_vmode_get(struct device *dev, struct device_attribute *da, char *buf
 
 ssize_t dc_vout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    u16 result = -EPERM;
+    int exponent = 0, mantissa = 0;
+    int multiplier = 1000;
+    u16 u16_val = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    
+    sprintf(buf, "");
+    if( bmc_enable() == ENABLE)
+    {
+        switch(attr->index)
+        {
+            case DC6E_P0_VOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P0_VOUT_REG);
+                break;
+            case DC6E_P1_VOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P1_VOUT_REG);
+                break;
+            case DC70_P0_VOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P0_VOUT_REG);
+                break;
+            case DC70_P1_VOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_VOUT_REG);
+                break;
+        }
+        exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
+        mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
+        multiplier = 1000;
+        result   = (exponent >= 0) ? ((mantissa << exponent)*multiplier) : \
+                        (mantissa*multiplier / (1 << -exponent));
+        sprintf(buf, "%s%d\n", buf, result);
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t dc_iout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    u16 result = -EPERM;
+    int exponent = 0, mantissa = 0;
+    int multiplier = 1000;
+    u16 u16_val = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    
+    sprintf(buf, "");
+    if( bmc_enable() == ENABLE)
+    {
+        switch(attr->index)
+        {
+            case DC6E_P0_IOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P0_IOUT_REG);
+                break;
+            case DC6E_P1_IOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P1_IOUT_REG);
+                break;
+            case DC70_P0_IOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P0_IOUT_REG);
+                break;
+            case DC70_P1_IOUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_IOUT_REG);
+                break;
+        }
+        exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
+        mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
+        multiplier = 1000;
+        result   = (exponent >= 0) ? ((mantissa << exponent)*multiplier) : \
+                        (mantissa*multiplier / (1 << -exponent));
+        sprintf(buf, "%s%d\n", buf, result);
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t dc_pout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    u16 result = -EPERM;
+    int exponent = 0, mantissa = 0;
+    int multiplier = 1000;
+    u16 u16_val = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    
+    sprintf(buf, "");
+    if( bmc_enable() == ENABLE)
+    {
+        switch(attr->index)
+        {
+            case DC6E_P0_POUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P0_POUT_REG);
+                break;
+            case DC6E_P1_POUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_6E_P1_POUT_REG);
+                break;
+            case DC70_P0_POUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P0_POUT_REG);
+                break;
+            case DC70_P1_POUT:
+                u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_POUT_REG);
+                break;
+        }
+        exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
+        mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
+        multiplier = 1000000;
+        result   = (exponent >= 0) ? ((mantissa << exponent)*multiplier) : \
+                        (mantissa*multiplier / (1 << -exponent));
+        sprintf(buf, "%s%d\n", buf, result);
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
     return sprintf(buf, "%s\n", buf);
 }
 /* end of implement i2c_function */
