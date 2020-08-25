@@ -142,20 +142,36 @@ unsigned char qsfp_int_regs[33][2] = {
     {0x91, 0x40},
     {0x91, 0x80}
 };
-#define QSFP1_4_INT_REG            0xd0
-#define QSFP2_4_INT_REG            0xd0
-#define QSFP3_4_INT_REG            0xd0
-#define QSFP4_4_INT_REG            0xd0
-#define QSFP1_4_MODPRS_REG         0xd0
-#define QSFP2_4_MODPRS_REG         0xd0
-#define QSFP3_4_MODPRS_REG         0xd0
-#define QSFP4_4_MODPRS_REG         0xd0
-#define QSFP1_4_INT_MASK_REG       0xd1
-#define QSFP2_4_INT_MASK_REG       0xd1
-#define QSFP3_4_INT_MASK_REG       0xd1
-#define QSFP4_4_INT_MASK_REG       0xd1
-#define QSFP1_4_MODPRS_MASK_REG    0xd1
-#define QSFP2_4_MODPRS_MASK_REG    0xd1
-#define QSFP3_4_MODPRS_MASK_REG    0xd1
-#define QSFP4_4_MODPRS_MASK_REG    0xd1 
+
+unsigned char qsfp_quter_int_regs[5][2] = {
+    {0x00, 0x00},  //cpld offset, bit mask
+    {0xd0, 0x04},
+    {0xd0, 0x08},
+    {0xd0, 0x04},
+    {0xd0, 0x08}
+};
+
+unsigned char qsfp_quter_int_mask_regs[5][2] = {
+    {0x00, 0x00},  //cpld offset, bit mask
+    {0xd1, 0x04},
+    {0xd1, 0x08},
+    {0xd1, 0x04},
+    {0xd1, 0x08}
+};
+
+unsigned char qsfp_modprs_int_regs[5][2] = {
+    {0x00, 0x00},  //cpld offset, bit mask
+    {0xd0, 0x01},
+    {0xd0, 0x02},
+    {0xd0, 0x01},
+    {0xd0, 0x02}
+};
+
+unsigned char qsfp_modprs_int_mask_regs[5][2] = {
+    {0x00, 0x00},  //cpld offset, bit mask
+    {0xd1, 0x01},
+    {0xd1, 0x02},
+    {0xd1, 0x01},
+    {0xd1, 0x02}
+};
 /* end of register offset define */

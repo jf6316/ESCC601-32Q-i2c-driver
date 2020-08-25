@@ -8,6 +8,9 @@
 #define TRUE            1
 #define FALSE           0
 
+#define ABNORMAL        1
+#define NORMAL          0
+
 #define BIT_0_MASK      0x01
 #define BIT_1_MASK      0x02
 #define BIT_2_MASK      0x04
