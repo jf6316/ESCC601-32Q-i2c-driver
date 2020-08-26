@@ -60,4 +60,164 @@ ssize_t themal_temp_get(struct device *dev, struct device_attribute *da, char *b
     
     return sprintf(buf, "%s\n", buf);
 }
+
+ssize_t themal_temp_max_get(struct device *dev, struct device_attribute *da, char *buf)
+{
+    int status = -EPERM;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    sprintf(buf, "");
+
+    if( bmc_enable() == ENABLE)
+    {
+        switch (attr->index)
+        {
+            case TEMP_R_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_MAX_REG);
+            break;
+            case TEMP_L_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_MAX_REG);
+            break;
+            case TEMP_R_T_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_MAX_REG);
+            break;
+            case TEMP_L_T_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_MAX_REG);
+            break;
+        }
+        if(status == 0xff || status < 0)
+        {
+            sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+        }
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
+    
+    return sprintf(buf, "%s\n", buf);
+}
+
+ssize_t themal_temp_min_get(struct device *dev, struct device_attribute *da, char *buf)
+{
+    int status = -EPERM;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    sprintf(buf, "");
+
+    if( bmc_enable() == ENABLE)
+    {
+        switch (attr->index)
+        {
+            case TEMP_R_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_MIN_REG);
+            break;
+            case TEMP_L_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_MIN_REG);
+            break;
+            case TEMP_R_T_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_MIN_REG);
+            break;
+            case TEMP_L_T_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_MIN_REG);
+            break;
+        }
+        if(status == 0xff || status < 0)
+        {
+            sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+        }
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
+    
+    return sprintf(buf, "%s\n", buf);
+}
+
+ssize_t themal_temp_crit_get(struct device *dev, struct device_attribute *da, char *buf)
+{
+    int status = -EPERM;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    sprintf(buf, "");
+
+    if( bmc_enable() == ENABLE)
+    {
+        switch (attr->index)
+        {
+            case TEMP_R_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_CRIT_REG);
+            break;
+            case TEMP_L_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_CRIT_REG);
+            break;
+            case TEMP_R_T_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_CRIT_REG);
+            break;
+            case TEMP_L_T_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_CRIT_REG);
+            break;
+        }
+        if(status == 0xff || status < 0)
+        {
+            sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+        }
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
+    
+    return sprintf(buf, "%s\n", buf);
+}
+
+ssize_t themal_temp_lcrit_get(struct device *dev, struct device_attribute *da, char *buf)
+{
+    int status = -EPERM;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+    sprintf(buf, "");
+
+    if( bmc_enable() == ENABLE)
+    {
+        switch (attr->index)
+        {
+            case TEMP_R_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_LCRIT_REG);
+            break;
+            case TEMP_L_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_LCRIT_REG);
+            break;
+            case TEMP_R_T_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_LCRIT_REG);
+            break;
+            case TEMP_L_T_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_LCRIT_REG);
+            break;
+        }
+        if(status == 0xff || status < 0)
+        {
+            sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+        }
+    }
+    else
+    {
+        sprintf(buf, "%sAccess BMC module FAILED\n", buf);
+    }
+    
+    return sprintf(buf, "%s\n", buf);
+}
 /* end of implement i2c_function */

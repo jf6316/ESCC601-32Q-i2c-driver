@@ -50,6 +50,10 @@ ssize_t sys_int_get(struct device *dev, struct device_attribute *da, char *buf);
 ssize_t sys_int_mask_get(struct device *dev, struct device_attribute *da, char *buf);
 ssize_t sys_int_mask_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count);
 ssize_t themal_temp_get(struct device *dev, struct device_attribute *da, char *buf);
+ssize_t themal_temp_max_get(struct device *dev, struct device_attribute *da, char *buf);
+ssize_t themal_temp_min_get(struct device *dev, struct device_attribute *da, char *buf);
+ssize_t themal_temp_crit_get(struct device *dev, struct device_attribute *da, char *buf);
+ssize_t themal_temp_lcrit_get(struct device *dev, struct device_attribute *da, char *buf);
 ssize_t fan_ctrl_mode_get(struct device *dev, struct device_attribute *da, char *buf);
 ssize_t fan_ctrl_rpm_get(struct device *dev, struct device_attribute *da, char *buf);
 ssize_t fan_status_get(struct device *dev, struct device_attribute *da, char *buf);
@@ -146,6 +150,22 @@ enum Cameo_i2c_sysfs_attributes
     TEMP_R_T_B,
     TEMP_L_T_F,
     TEMP_L_T_B,
+    TEMP_R_B_MAX,
+    TEMP_L_B_MAX,
+    TEMP_R_T_MAX,
+    TEMP_L_T_MAX,
+    TEMP_R_B_MIN,
+    TEMP_L_B_MIN,
+    TEMP_R_T_MIN,
+    TEMP_L_T_MIN,
+    TEMP_R_B_CRIT,
+    TEMP_L_B_CRIT,
+    TEMP_R_T_CRIT,
+    TEMP_L_T_CRIT,
+    TEMP_R_B_LCRIT,
+    TEMP_L_B_LCRIT,
+    TEMP_R_T_LCRIT,
+    TEMP_L_T_LCRIT,
     FANCTRL_RPM,
     FANCTRL_MODE,
     FAN1_STAT,
@@ -373,10 +393,10 @@ static SENSOR_DEVICE_ATTR(usb_en                , S_IRUGO | S_IWUSR , usb_enable
 static SENSOR_DEVICE_ATTR(shutdown_set          , S_IRUGO | S_IWUSR , NULL                     , shutdown_set             , SHUTDOWN_SET);
 static SENSOR_DEVICE_ATTR(reset                 , S_IRUGO | S_IWUSR , NULL                     , reset_mac_set            , RESET);
 static SENSOR_DEVICE_ATTR(bmc_present           , S_IRUGO           , bmc_enable_get           , NULL                     , BMC_PRESENT);
-static SENSOR_DEVICE_ATTR(led_1                 , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , LED_1);
-static SENSOR_DEVICE_ATTR(led_2                 , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , LED_2);
-static SENSOR_DEVICE_ATTR(led_flow              , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , LED_FLOW);
-static SENSOR_DEVICE_ATTR(led_sys               , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , LED_SYS);
+static SENSOR_DEVICE_ATTR(led_1                 , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , 4);
+static SENSOR_DEVICE_ATTR(led_2                 , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , 3);
+static SENSOR_DEVICE_ATTR(led_flow              , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , 2);
+static SENSOR_DEVICE_ATTR(led_sys               , S_IRUGO | S_IWUSR , led_ctrl_get             , led_ctrl_set             , 1);
 static SENSOR_DEVICE_ATTR(led_fiber             , S_IRUGO | S_IWUSR , led_fiber_get            , led_fiber_set            , LED_FIBER);
 static SENSOR_DEVICE_ATTR(temp_r_b_int          , S_IRUGO           , themal_int_get           , NULL                     , TEMP_R_B_INT);
 static SENSOR_DEVICE_ATTR(temp_l_b_int          , S_IRUGO           , themal_int_get           , NULL                     , TEMP_L_B_INT);
@@ -406,6 +426,22 @@ static SENSOR_DEVICE_ATTR(temp_r_t_f            , S_IRUGO           , themal_tem
 static SENSOR_DEVICE_ATTR(temp_r_t_b            , S_IRUGO           , themal_temp_get          , NULL                     , TEMP_R_T_B);
 static SENSOR_DEVICE_ATTR(temp_l_t_f            , S_IRUGO           , themal_temp_get          , NULL                     , TEMP_L_T_F);
 static SENSOR_DEVICE_ATTR(temp_l_t_b            , S_IRUGO           , themal_temp_get          , NULL                     , TEMP_L_T_B);
+static SENSOR_DEVICE_ATTR(temp_r_b_max          , S_IRUGO           , themal_temp_max_get      , NULL                     , TEMP_R_B_MAX);
+static SENSOR_DEVICE_ATTR(temp_l_b_max          , S_IRUGO           , themal_temp_max_get      , NULL                     , TEMP_L_B_MAX);
+static SENSOR_DEVICE_ATTR(temp_r_t_max          , S_IRUGO           , themal_temp_max_get      , NULL                     , TEMP_R_T_MAX);
+static SENSOR_DEVICE_ATTR(temp_l_t_max          , S_IRUGO           , themal_temp_max_get      , NULL                     , TEMP_L_T_MAX);
+static SENSOR_DEVICE_ATTR(temp_r_b_min          , S_IRUGO           , themal_temp_min_get      , NULL                     , TEMP_R_B_MIN);
+static SENSOR_DEVICE_ATTR(temp_l_b_min          , S_IRUGO           , themal_temp_min_get      , NULL                     , TEMP_L_B_MIN);
+static SENSOR_DEVICE_ATTR(temp_r_t_min          , S_IRUGO           , themal_temp_min_get      , NULL                     , TEMP_R_T_MIN);
+static SENSOR_DEVICE_ATTR(temp_l_t_min          , S_IRUGO           , themal_temp_min_get      , NULL                     , TEMP_L_T_MIN);
+static SENSOR_DEVICE_ATTR(temp_r_b_crit         , S_IRUGO           , themal_temp_crit_get     , NULL                     , TEMP_R_B_CRIT);
+static SENSOR_DEVICE_ATTR(temp_l_b_crit         , S_IRUGO           , themal_temp_crit_get     , NULL                     , TEMP_L_B_CRIT);
+static SENSOR_DEVICE_ATTR(temp_r_t_crit         , S_IRUGO           , themal_temp_crit_get     , NULL                     , TEMP_R_T_CRIT);
+static SENSOR_DEVICE_ATTR(temp_l_t_crit         , S_IRUGO           , themal_temp_crit_get     , NULL                     , TEMP_L_T_CRIT);
+static SENSOR_DEVICE_ATTR(temp_r_b_lcrit        , S_IRUGO           , themal_temp_lcrit_get    , NULL                     , TEMP_R_B_LCRIT);
+static SENSOR_DEVICE_ATTR(temp_l_b_lcrit        , S_IRUGO           , themal_temp_lcrit_get    , NULL                     , TEMP_L_B_LCRIT);
+static SENSOR_DEVICE_ATTR(temp_r_t_lcrit        , S_IRUGO           , themal_temp_lcrit_get    , NULL                     , TEMP_R_T_LCRIT);
+static SENSOR_DEVICE_ATTR(temp_l_t_lcrit        , S_IRUGO           , themal_temp_lcrit_get    , NULL                     , TEMP_L_T_LCRIT);
 static SENSOR_DEVICE_ATTR(fanctrl_rpm           , S_IRUGO           , fan_ctrl_mode_get        , NULL                     , FANCTRL_RPM);
 static SENSOR_DEVICE_ATTR(fanctrl_mode          , S_IRUGO           , fan_ctrl_rpm_get         , NULL                     , FANCTRL_MODE);
 static SENSOR_DEVICE_ATTR(fan1_stat             , S_IRUGO           , fan_status_get           , NULL                     , 1);
@@ -676,6 +712,22 @@ static struct attribute *ESCC601_THERMAL_attributes[] =
     &sensor_dev_attr_temp_l_b_int_mask.dev_attr.attr,
     &sensor_dev_attr_temp_r_t_int_mask.dev_attr.attr,
     &sensor_dev_attr_temp_l_t_int_mask.dev_attr.attr,
+    &sensor_dev_attr_temp_r_b_max.dev_attr.attr,
+    &sensor_dev_attr_temp_r_b_min.dev_attr.attr,
+    &sensor_dev_attr_temp_r_b_crit.dev_attr.attr,
+    &sensor_dev_attr_temp_r_b_lcrit.dev_attr.attr,
+    &sensor_dev_attr_temp_l_b_max.dev_attr.attr,
+    &sensor_dev_attr_temp_l_b_min.dev_attr.attr,
+    &sensor_dev_attr_temp_l_b_crit.dev_attr.attr,
+    &sensor_dev_attr_temp_l_b_lcrit.dev_attr.attr,
+    &sensor_dev_attr_temp_r_t_max.dev_attr.attr,
+    &sensor_dev_attr_temp_r_t_min.dev_attr.attr,
+    &sensor_dev_attr_temp_r_t_crit.dev_attr.attr,
+    &sensor_dev_attr_temp_r_t_lcrit.dev_attr.attr,
+    &sensor_dev_attr_temp_l_t_max.dev_attr.attr,
+    &sensor_dev_attr_temp_l_t_min.dev_attr.attr,
+    &sensor_dev_attr_temp_l_t_crit.dev_attr.attr,
+    &sensor_dev_attr_temp_l_t_lcrit.dev_attr.attr,
     NULL
 };
 static struct attribute *ESCC601_FAN_attributes[] =
