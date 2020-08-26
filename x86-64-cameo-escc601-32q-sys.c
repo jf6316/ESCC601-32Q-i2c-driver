@@ -79,7 +79,7 @@ ssize_t wdt_enable_set(struct device *dev, struct device_attribute *da, const ch
     int status = -EPERM;
     int value  = -EPERM;
     int result = -EPERM;
-    int i;
+    int input;
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
     
@@ -87,33 +87,34 @@ ssize_t wdt_enable_set(struct device *dev, struct device_attribute *da, const ch
     status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, WDT_EN_REG);
     if (attr->index == WDT_EN)
     {
-        i = simple_strtol(buf, NULL, 10);
-        if (i == ENABLE)
+        input = simple_strtol(buf, NULL, 10);
+        if (input == ENABLE)
         {
             value = status | WDT_EN_ENABLE;
             result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, WDT_EN_REG, value);
             if (result < 0)
             {
-                printk(KERN_ALERT "ERROR: WDT_EN_ENABLE FAILED!\n");
+                printk(KERN_ALERT "ERROR: wdt_enable_set FAILED!\n");
             }
         }
-        else if (i == DISABLE)
+        else if (input == DISABLE)
         {
             value = status & WDT_EN_DISABLE;
             result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, WDT_EN_REG, value);
             if (result < 0)
             {
-                printk(KERN_ALERT "ERROR:WDT_EN_DISABLE FAILED!\n");
+                printk(KERN_ALERT "ERROR: wdt_enable_set FAILED!\n");
             }
         }
         else
         {
-            printk(KERN_ALERT "WDT_EN set wrong Value\n");
+            printk(KERN_ALERT "wdt_enable_set wrong Value\n");
         }
     }
     mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t eeprom_wp_get(struct device *dev, struct device_attribute *da, char *buf)
 {
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
@@ -123,7 +124,7 @@ ssize_t eeprom_wp_get(struct device *dev, struct device_attribute *da, char *buf
     sprintf(buf, "");
     if (attr->index == EEPROM_WP)
     {
-        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG) & BIT_2_MASK)
+        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG) & BIT_3_MASK)
         {
             sprintf(buf, "%s%d\n", buf, ENABLE);
         }
@@ -135,12 +136,13 @@ ssize_t eeprom_wp_get(struct device *dev, struct device_attribute *da, char *buf
     mutex_unlock(&data->update_lock);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t eeprom_wp_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
     int status = -EPERM;
     int value  = -EPERM;
     int result = -EPERM;
-    int i;
+    int input;
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
     
@@ -148,75 +150,636 @@ ssize_t eeprom_wp_set(struct device *dev, struct device_attribute *da, const cha
     status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG);
     if (attr->index == EEPROM_WP)
     {
-        i = simple_strtol(buf, NULL, 10);
-        if (i == ENABLE)
+        input = simple_strtol(buf, NULL, 10);
+        if (input == ENABLE)
         {
             value = status | EEPROM_WP_ENABLE;
             result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG, value);
             if (result < 0)
             {
-                printk(KERN_ALERT "ERROR: EEPROM_WP_ENABLE FAILED!\n");
+                printk(KERN_ALERT "ERROR: eeprom_wp_set FAILED!\n");
             }
         }
-        else if (i == DISABLE)
+        else if (input == DISABLE)
         {
             value = status & EEPROM_WP_DISABLE;
             result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG, value);
             if (result < 0)
             {
-                printk(KERN_ALERT "ERROR:EEPROM_WP_DISABLE FAILED!\n");
+                printk(KERN_ALERT "ERROR: eeprom_wp_set FAILED!\n");
             }
         }
         else
         {
-            printk(KERN_ALERT "EEPROM_WP set wrong Value\n");
+            printk(KERN_ALERT "eeprom_wp_set wrong Value\n");
         }
     }
     mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t usb_enable_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    if (attr->index == USB_EN)
+    {
+        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, USB_EN_REG) & BIT_2_MASK)
+        {
+            sprintf(buf, "%s%d\n", buf, ENABLE);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, DISABLE);
+        }
+    }
+    mutex_unlock(&data->update_lock);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t usb_enable_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
+    int status = -EPERM;
+    int value  = -EPERM;
+    int result = -EPERM;
+    int input;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, USB_EN_REG);
+    if (attr->index == USB_EN)
+    {
+        input = simple_strtol(buf, NULL, 10);
+        if (input == ENABLE)
+        {
+            value = status | USB_EN_ENABLE;
+            result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, USB_EN_REG, value);
+            if (result < 0)
+            {
+                printk(KERN_ALERT "ERROR: usb_enable_set FAILED!\n");
+            }
+        }
+        else if (input == DISABLE)
+        {
+            value = status & USB_EN_DISABLE;
+            result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, USB_EN_REG, value);
+            if (result < 0)
+            {
+                printk(KERN_ALERT "ERROR: usb_enable_set FAILED!\n");
+            }
+        }
+        else
+        {
+            printk(KERN_ALERT "usb_enable_set wrong Value\n");
+        }
+    }
+    mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t reset_mac_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
+    int status = -EPERM;
+    int value  = -EPERM;
+    int result = -EPERM;
+    int input;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, MAC_RESET_REG);
+    if (attr->index == RESET)
+    {
+        input = simple_strtol(buf, NULL, 10);
+        if (input == MAC_RESET)
+        {
+            value = MAC_RESET;
+            result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, MAC_RESET_REG, value);
+            if (result < 0)
+            {
+                printk(KERN_ALERT "ERROR: reset_mac_set FAILED!\n");
+            }
+        }
+        else
+        {
+            printk(KERN_ALERT "reset_mac_set wrong Value\n");
+        }
+    }
+    mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t shutdown_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
+    int status = -EPERM;
+    int value  = -EPERM;
+    int result = -EPERM;
+    int input;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SHUTDOWN_REG);
+    if (attr->index == SHUTDOWN_SET)
+    {
+        input = simple_strtol(buf, NULL, 10);
+        if (input == SHUTDOWN)
+        {
+            value = status | SHUTDOWN;
+            result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, SHUTDOWN_REG, value);
+            if (result < 0)
+            {
+                printk(KERN_ALERT "ERROR: shutdown_set FAILED!\n");
+            }
+        }
+        else
+        {
+            printk(KERN_ALERT "shutdown_set wrong Value\n");
+        }
+    }
+    mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t bmc_enable_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    if (attr->index == BMC_PRESENT)
+    {
+        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, BMC_EN_REG) & BIT_0_MASK)
+        {
+            sprintf(buf, "%s%d\n", buf, ENABLE);
+        }
+        else
+        {
+            sprintf(buf, "%s%d\n", buf, DISABLE);
+        }
+    }
+    mutex_unlock(&data->update_lock);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t themal_int_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    int result = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    switch (attr->index)
+    {
+        case TEMP_R_B_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_REG) & BIT_0_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_L_B_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_REG) & BIT_1_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_L_T_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_REG) & BIT_2_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_R_T_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_REG) & BIT_3_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+    }
+    mutex_unlock(&data->update_lock);
+    sprintf(buf, "%s%d\n", buf, result);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t themal_int_mask_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    int result = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    switch (attr->index)
+    {
+        case TEMP_R_B_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG) & BIT_0_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_L_B_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG) & BIT_1_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_L_T_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG) & BIT_2_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case TEMP_R_T_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG) & BIT_3_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+    }
+    mutex_unlock(&data->update_lock);
+    sprintf(buf, "%s%d\n", buf, result);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t themal_int_mask_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
+    int status = -EPERM;
+    int value  = -EPERM;
+    int result = -EPERM;
+    int input;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG);
+    
+    input = simple_strtol(buf, NULL, 10);
+    switch (attr->index)
+    {
+        case TEMP_R_B_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x01;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xfe;
+            }
+            else
+            {
+                printk(KERN_ALERT "themal_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case TEMP_L_B_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x02;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xfd;
+            }
+            else
+            {
+                printk(KERN_ALERT "themal_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case TEMP_L_T_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x04;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xfb;
+            }
+            else
+            {
+                printk(KERN_ALERT "themal_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case TEMP_R_T_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x08;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xf7;
+            }
+            else
+            {
+                printk(KERN_ALERT "themal_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+    }
+    result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, THERMAL_INT_MASK_REG, value);
+    mutex_unlock(&data->update_lock);
     return count;
 }
+
 ssize_t sys_int_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    int result = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    switch (attr->index)
+    {
+        case CPLD_FP_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_2_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_RP_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_3_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_FAN_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_4_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_PSU_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_5_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case THERMAL_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_6_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case USB_INT:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_REG) & BIT_7_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+    }
+    mutex_unlock(&data->update_lock);
+    sprintf(buf, "%s%d\n", buf, result);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t sys_int_mask_get(struct device *dev, struct device_attribute *da, char *buf)
 {
+    int result = 0;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    sprintf(buf, "");
+    switch (attr->index)
+    {
+        case CPLD_FP_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_2_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_RP_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_3_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_FAN_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_4_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case CPLD_PSU_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_5_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case THERMAL_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_6_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+        case USB_INT_MASK:
+            if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG) & BIT_7_MASK)
+            {
+                result = ENABLE;
+            }
+            else
+            {
+                result = DISABLE;
+            }
+            break;
+    }
+    mutex_unlock(&data->update_lock);
+    sprintf(buf, "%s%d\n", buf, result);
     return sprintf(buf, "%s\n", buf);
 }
+
 ssize_t sys_int_mask_set(struct device *dev, struct device_attribute *da, const char *buf, size_t count)
 {
+    int status = -EPERM;
+    int value  = -EPERM;
+    int result = -EPERM;
+    int input;
+    struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+	struct Cameo_i2c_data *data = i2c_get_clientdata(Cameo_CPLD_30_client);
+    
+    mutex_lock(&data->update_lock);
+    status = i2c_smbus_read_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG);
+    
+    input = simple_strtol(buf, NULL, 10);
+    switch (attr->index)
+    {
+        case CPLD_FP_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x02;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xfd;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case CPLD_RP_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x04;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xfb;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case CPLD_FAN_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x08;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xf7;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case CPLD_PSU_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x10;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xef;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case THERMAL_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x20;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xdf;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+        case USB_INT_MASK:
+            if (input == ENABLE)
+            {
+                value = status | 0x40;
+            }
+            else if (input == DISABLE)
+            {
+                value = status & 0xbf;
+            }
+            else
+            {
+                printk(KERN_ALERT "sys_int_mask_set wrong Value\n");
+                return count;
+            }
+            break;
+    }
+    result = i2c_smbus_write_byte_data(Cameo_CPLD_30_client, SYS_INT_MASK_REG, value);
+    mutex_unlock(&data->update_lock);
     return count;
 }
 /* end of implement i2c_function */
