@@ -1,4 +1,14 @@
 /* register offset define */
+#define QSFP_FRONT_LOW_POWER_REG    0x60
+#define QSFP_REAR_LOW_POWER_REG     0x61
+#define QSFP_FRONT_RESET_REG        0x70
+#define QSFP_REAR_RESET_REG         0x71
+#define QSFP_FRONT_PRESENT_REG      0x80
+#define QSFP_REAR_PRESENT_REG       0x81
+#define QSFP_FRONT_INT_REG          0x90
+#define QSFP_REAR_INT_REG           0x91
+#define QSFP_RESET                  1
+
 unsigned char qsfp_low_power_regs[33][2] = {
     {0x00, 0x00},  //cpld offset, bit mask
     {0x60, 0x01},
