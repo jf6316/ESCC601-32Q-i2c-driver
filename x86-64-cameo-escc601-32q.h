@@ -801,13 +801,6 @@ static struct attribute *ESCC601_POWER_attributes[] =
     &sensor_dev_attr_dc70_p1_vout.dev_attr.attr,
     &sensor_dev_attr_dc70_p1_iout.dev_attr.attr,
     &sensor_dev_attr_dc70_p1_pout.dev_attr.attr,
-    &sensor_dev_attr_dc6e_p1_pout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p0_vout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p0_iout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p0_pout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p1_vout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p1_iout.dev_attr.attr,
-    &sensor_dev_attr_dc70_p1_pout.dev_attr.attr,
     NULL
 };
 static struct attribute *ESCC601_QSFP_attributes[] =

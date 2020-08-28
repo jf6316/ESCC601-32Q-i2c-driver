@@ -265,6 +265,7 @@ ssize_t qsfp_present_all_get(struct device *dev, struct device_attribute *da, ch
         result = (result << 8) | status;
         status = i2c_smbus_read_byte_data(Cameo_CPLD_31_client, QSFP_FRONT_PRESENT_REG); //1-8
         result = (result << 8) | status;
+        result = ~(result);
         sprintf(buf, "%s0x%x\n", buf, result);
     }
     return sprintf(buf, "%s\n", buf);
@@ -290,11 +291,11 @@ ssize_t qsfp_present_get(struct device *dev, struct device_attribute *da, char *
     
     if (status & qsfp_present_regs[port_index][1])
     {
-        sprintf(buf, "%s%d\n", buf, ENABLE);
+        sprintf(buf, "%s%d\n", buf, DISABLE);
     }
     else
     {
-        sprintf(buf, "%s%d\n", buf, DISABLE);
+        sprintf(buf, "%s%d\n", buf, ENABLE);
     }
     
     return sprintf(buf, "%s\n", buf);
