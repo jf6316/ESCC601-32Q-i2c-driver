@@ -59,7 +59,7 @@ ssize_t wdt_enable_get(struct device *dev, struct device_attribute *da, char *bu
     
     mutex_lock(&data->update_lock);
     sprintf(buf, "");
-    if (attr->index == EEPROM_WP)
+    if (attr->index == WDT_EN)
     {
         if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, WDT_EN_REG) & BIT_4_MASK)
         {
@@ -124,7 +124,7 @@ ssize_t eeprom_wp_get(struct device *dev, struct device_attribute *da, char *buf
     sprintf(buf, "");
     if (attr->index == EEPROM_WP)
     {
-        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG) & BIT_3_MASK)
+        if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, EEPROM_WP_REG) & BIT_2_MASK)
         {
             sprintf(buf, "%s%d\n", buf, ENABLE);
         }
