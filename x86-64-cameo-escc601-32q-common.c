@@ -24,7 +24,7 @@ struct i2c_client *Cameo_BMC_14_client;  //0x14 for BMC slave
 /* common function */
 int bmc_enable(void)
 {
-    if (i2c_smbus_read_byte_data(Cameo_CPLD_30_client, BMC_EN_REG) & BIT_0_MASK)
+    if ((i2c_smbus_read_byte_data(Cameo_CPLD_30_client, BMC_EN_REG) & BIT_0_MASK) == 0x01)
     {
         return ENABLE;
     }

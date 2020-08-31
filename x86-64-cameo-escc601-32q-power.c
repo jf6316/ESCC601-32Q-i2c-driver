@@ -42,17 +42,17 @@ ssize_t psu_status_get(struct device *dev, struct device_attribute *da, char *bu
         mutex_unlock(&Cameo_CPLD_35_data->update_lock);
     }
     
-    result = FALSE;
+    result = TRUE;
     switch (attr->index)
     {
         case 1:
-            if(status & BIT_0_MASK)
+            if(status & BIT_3_MASK)
             {
                 result = FALSE;
             }
             break;
         case 2:
-            if(status & BIT_1_MASK)
+            if(status & BIT_2_MASK)
             {
                 result = FALSE;
             }
@@ -128,6 +128,10 @@ ssize_t psu_vin_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_VIN_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
         multiplier = 1000;
@@ -160,6 +164,10 @@ ssize_t psu_iin_get(struct device *dev, struct device_attribute *da, char *buf)
             case PSU2_IIN:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_IIN_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
@@ -197,6 +205,10 @@ ssize_t psu_vout_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_vout  = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_VOUT_REG); 
                 break;
         }
+        if(u16_vout == 0xffff || u16_vout == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         /* vout mode */
         multiplier = 1000;
         exponent = two_complement_to_int(u16_vmode & 0x1f, 5, 0x1f);
@@ -232,6 +244,10 @@ ssize_t psu_iout_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_IOUT_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
         multiplier = 1000;
@@ -265,6 +281,10 @@ ssize_t psu_temp_get(struct device *dev, struct device_attribute *da, char *buf)
             case PSU2_TEMP:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_TEMP_1_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
@@ -300,6 +320,10 @@ ssize_t psu_fan_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_FAN_SPEED_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
         multiplier = 1;
@@ -333,6 +357,10 @@ ssize_t psu_pout_get(struct device *dev, struct device_attribute *da, char *buf)
             case PSU2_POUT:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_POUT_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
@@ -368,6 +396,10 @@ ssize_t psu_pin_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_PIN_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
         multiplier = 1000000; // lm-sensor unit: uW
@@ -399,6 +431,10 @@ ssize_t psu_mfr_model_get(struct device *dev, struct device_attribute *da, char 
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_MFR_MODEL_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         sprintf(buf, "%s%d\n", buf, u16_val);
     }
     else
@@ -427,6 +463,10 @@ ssize_t psu_iout_max_get(struct device *dev, struct device_attribute *da, char *
             case PSU2_MFR_IOUT_MAX:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, PSU_2_MFR_IOUT_MAX_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
@@ -458,6 +498,10 @@ ssize_t psu_vmode_get(struct device *dev, struct device_attribute *da, char *buf
             case PSU2_VOMDE:
                 u16_vmode = i2c_smbus_read_byte_data(Cameo_BMC_14_client, PSU_2_VOMDE_REG); 
                 break;
+        }
+        if(u16_vmode == 0xffff || u16_vmode == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         /* vout mode */
         sprintf(buf, "%s%d\n", buf, u16_vmode);
@@ -494,6 +538,10 @@ ssize_t dc_vout_get(struct device *dev, struct device_attribute *da, char *buf)
             case DC70_P1_VOUT:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_VOUT_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
@@ -535,6 +583,10 @@ ssize_t dc_iout_get(struct device *dev, struct device_attribute *da, char *buf)
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_IOUT_REG);
                 break;
         }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
+        }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
         multiplier = 1000;
@@ -574,6 +626,10 @@ ssize_t dc_pout_get(struct device *dev, struct device_attribute *da, char *buf)
             case DC70_P1_POUT:
                 u16_val = i2c_smbus_read_word_data(Cameo_BMC_14_client, DC_CHIP_70_P1_POUT_REG);
                 break;
+        }
+        if(u16_val == 0xffff || u16_val == -1)
+        {
+            return sprintf(buf, "%s0\n", buf);
         }
         exponent = two_complement_to_int(u16_val >> 11, 5, 0x1f);
         mantissa = two_complement_to_int(u16_val & 0x7ff, 11, 0x7ff);
