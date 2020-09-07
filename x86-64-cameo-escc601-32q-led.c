@@ -1,4 +1,4 @@
-/* An hwmon driver for Cameo ESCC601-32Q Innovium i2c Module */
+/* An hwmon driver for Cameo escc601-32Q Innovium i2c Module */
 #pragma GCC diagnostic ignored "-Wformat-zero-length"
 #include "x86-64-cameo-escc601-32q.h"
 #include "x86-64-cameo-escc601-32q-common.h"

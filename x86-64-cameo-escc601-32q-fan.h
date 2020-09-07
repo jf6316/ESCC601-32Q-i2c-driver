@@ -1,6 +1,6 @@
 /* register offset define */
-#define FANCTRL_RPM_REG         0x16
-#define FANCTRL_MODE_REG        0x17
+#define FANCTRL_RPM_REG         0x1a
+#define FANCTRL_MODE_REG        0x1b
 #define FAN_STAT_REG            0x00
 #define FAN_POWER_REG           0x01
 #define FAN_PRESENT_REG         0x02

@@ -1,4 +1,4 @@
-/* An hwmon driver for Cameo ESCC601-32Q Innovium i2c Module */
+/* An hwmon driver for Cameo escc601-32Q Innovium i2c Module */
 #pragma GCC diagnostic ignored "-Wformat-zero-length"
 #include "x86-64-cameo-escc601-32q.h"
 #include "x86-64-cameo-escc601-32q-common.h"
@@ -23,7 +23,7 @@ static int two_complement_to_int(u16 data, u8 valid_bit, int mask)
 ssize_t psu_status_get(struct device *dev, struct device_attribute *da, char *buf)
 {
     int status = -EPERM;
-    int result = -EPERM;
+    u32 result = -EPERM;
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct Cameo_i2c_data *Cameo_CPLD_35_data = i2c_get_clientdata(Cameo_CPLD_35_client);
     struct Cameo_i2c_data *Cameo_BMC_14_data = i2c_get_clientdata(Cameo_BMC_14_client);
@@ -67,7 +67,7 @@ ssize_t psu_status_get(struct device *dev, struct device_attribute *da, char *bu
 ssize_t psu_present_get(struct device *dev, struct device_attribute *da, char *buf)
 {
     int status = -EPERM;
-    int result = -EPERM;
+    u32 result = -EPERM;
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct Cameo_i2c_data *Cameo_CPLD_35_data = i2c_get_clientdata(Cameo_CPLD_35_client);
     struct Cameo_i2c_data *Cameo_BMC_14_data = i2c_get_clientdata(Cameo_BMC_14_client);
@@ -110,7 +110,7 @@ ssize_t psu_present_get(struct device *dev, struct device_attribute *da, char *b
 }
 ssize_t psu_vin_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    int result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;
@@ -147,7 +147,7 @@ ssize_t psu_vin_get(struct device *dev, struct device_attribute *da, char *buf)
 }
 ssize_t psu_iin_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;
@@ -184,7 +184,7 @@ ssize_t psu_iin_get(struct device *dev, struct device_attribute *da, char *buf)
 }
 ssize_t psu_vout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0;
     int multiplier = 1000;
     u16 u16_vmode = 0;
@@ -226,7 +226,7 @@ ssize_t psu_vout_get(struct device *dev, struct device_attribute *da, char *buf)
 
 ssize_t psu_iout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;
@@ -340,7 +340,7 @@ ssize_t psu_fan_get(struct device *dev, struct device_attribute *da, char *buf)
 
 ssize_t psu_pout_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;
@@ -378,7 +378,7 @@ ssize_t psu_pout_get(struct device *dev, struct device_attribute *da, char *buf)
 
 ssize_t psu_pin_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;
@@ -417,6 +417,7 @@ ssize_t psu_pin_get(struct device *dev, struct device_attribute *da, char *buf)
 ssize_t psu_mfr_model_get(struct device *dev, struct device_attribute *da, char *buf)
 {
     u16 u16_val = 0;
+    char model[2];
     struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
     
     sprintf(buf, "");
@@ -435,7 +436,9 @@ ssize_t psu_mfr_model_get(struct device *dev, struct device_attribute *da, char 
         {
             return sprintf(buf, "%s0\n", buf);
         }
-        sprintf(buf, "%s%d\n", buf, u16_val);
+        model[0] = u16_val >> 8;
+        model[1] = u16_val;
+        sprintf(buf, "%s%c%c\n", buf, model[0], model[1]);
     }
     else
     {
@@ -446,7 +449,7 @@ ssize_t psu_mfr_model_get(struct device *dev, struct device_attribute *da, char 
 
 ssize_t psu_iout_max_get(struct device *dev, struct device_attribute *da, char *buf)
 {
-    u16 result = -EPERM;
+    u32 result = -EPERM;
     int exponent = 0, mantissa = 0;
     int multiplier = 1000;
     u16 u16_val = 0;

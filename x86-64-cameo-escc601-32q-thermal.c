@@ -1,4 +1,4 @@
-/* An hwmon driver for Cameo ESCC601-32Q Innovium i2c Module */
+/* An hwmon driver for Cameo escc601-32Q Innovium i2c Module */
 #pragma GCC diagnostic ignored "-Wformat-zero-length"
 #include "x86-64-cameo-escc601-32q.h"
 #include "x86-64-cameo-escc601-32q-common.h"
@@ -71,17 +71,29 @@ ssize_t themal_temp_max_get(struct device *dev, struct device_attribute *da, cha
     {
         switch (attr->index)
         {
-            case TEMP_R_B_MAX:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_MAX_REG);
+            case TEMP_R_B_F_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_F_MAX_REG);
             break;
-            case TEMP_L_B_MAX:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_MAX_REG);
+            case TEMP_L_B_F_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_F_MAX_REG);
             break;
-            case TEMP_R_T_MAX:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_MAX_REG);
+            case TEMP_R_T_F_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_F_MAX_REG);
             break;
-            case TEMP_L_T_MAX:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_MAX_REG);
+            case TEMP_L_T_F_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_F_MAX_REG);
+            break;
+            case TEMP_R_B_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_B_MAX_REG);
+            break;
+            case TEMP_L_B_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_B_MAX_REG);
+            break;
+            case TEMP_R_T_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_B_MAX_REG);
+            break;
+            case TEMP_L_T_B_MAX:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_B_MAX_REG);
             break;
         }
         if(status == 0xff || status < 0)
@@ -111,17 +123,29 @@ ssize_t themal_temp_min_get(struct device *dev, struct device_attribute *da, cha
     {
         switch (attr->index)
         {
-            case TEMP_R_B_MIN:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_MIN_REG);
+            case TEMP_R_B_F_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_F_MIN_REG);
             break;
-            case TEMP_L_B_MIN:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_MIN_REG);
+            case TEMP_L_B_F_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_F_MIN_REG);
             break;
-            case TEMP_R_T_MIN:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_MIN_REG);
+            case TEMP_R_T_F_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_F_MIN_REG);
             break;
-            case TEMP_L_T_MIN:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_MIN_REG);
+            case TEMP_L_T_F_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_F_MIN_REG);
+            break;
+            case TEMP_R_B_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_B_MIN_REG);
+            break;
+            case TEMP_L_B_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_B_MIN_REG);
+            break;
+            case TEMP_R_T_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_B_MIN_REG);
+            break;
+            case TEMP_L_T_B_MIN:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_B_MIN_REG);
             break;
         }
         if(status == 0xff || status < 0)
@@ -151,17 +175,29 @@ ssize_t themal_temp_crit_get(struct device *dev, struct device_attribute *da, ch
     {
         switch (attr->index)
         {
-            case TEMP_R_B_CRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_CRIT_REG);
+            case TEMP_R_B_F_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_F_CRIT_REG);
             break;
-            case TEMP_L_B_CRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_CRIT_REG);
+            case TEMP_L_B_F_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_F_CRIT_REG);
             break;
-            case TEMP_R_T_CRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_CRIT_REG);
+            case TEMP_R_T_F_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_F_CRIT_REG);
             break;
-            case TEMP_L_T_CRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_CRIT_REG);
+            case TEMP_L_T_F_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_F_CRIT_REG);
+            break;
+            case TEMP_R_B_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_B_CRIT_REG);
+            break;
+            case TEMP_L_B_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_B_CRIT_REG);
+            break;
+            case TEMP_R_T_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_B_CRIT_REG);
+            break;
+            case TEMP_L_T_B_CRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_B_CRIT_REG);
             break;
         }
         if(status == 0xff || status < 0)
@@ -191,17 +227,29 @@ ssize_t themal_temp_lcrit_get(struct device *dev, struct device_attribute *da, c
     {
         switch (attr->index)
         {
-            case TEMP_R_B_LCRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_LCRIT_REG);
+            case TEMP_R_B_F_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_F_LCRIT_REG);
             break;
-            case TEMP_L_B_LCRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_LCRIT_REG);
+            case TEMP_L_B_F_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_F_LCRIT_REG);
             break;
-            case TEMP_R_T_LCRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_LCRIT_REG);
+            case TEMP_R_T_F_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_F_LCRIT_REG);
             break;
-            case TEMP_L_T_LCRIT:
-                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_LCRIT_REG);
+            case TEMP_L_T_F_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_F_LCRIT_REG);
+            break;
+            case TEMP_R_B_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_B_B_LCRIT_REG);
+            break;
+            case TEMP_L_B_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_B_B_LCRIT_REG);
+            break;
+            case TEMP_R_T_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_R_T_B_LCRIT_REG);
+            break;
+            case TEMP_L_T_B_LCRIT:
+                status = i2c_smbus_read_byte_data(Cameo_BMC_14_client, TEMP_L_T_B_LCRIT_REG);
             break;
         }
         if(status == 0xff || status < 0)
