@@ -46,13 +46,13 @@ ssize_t psu_status_get(struct device *dev, struct device_attribute *da, char *bu
     switch (attr->index)
     {
         case 1:
-            if(status & BIT_3_MASK)
+            if(status & BIT_2_MASK)
             {
                 result = FALSE;
             }
             break;
         case 2:
-            if(status & BIT_2_MASK)
+            if(status & BIT_3_MASK)
             {
                 result = FALSE;
             }
@@ -90,13 +90,13 @@ ssize_t psu_present_get(struct device *dev, struct device_attribute *da, char *b
     switch (attr->index)
     {
         case 1:
-            if(status & BIT_1_MASK)
+            if(status & BIT_0_MASK)
             {
                 result = TRUE;
             }
             break;
         case 2:
-            if(status & BIT_0_MASK)
+            if(status & BIT_1_MASK)
             {
                 result = TRUE;
             }

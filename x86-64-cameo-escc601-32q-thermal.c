@@ -50,7 +50,7 @@ ssize_t themal_temp_get(struct device *dev, struct device_attribute *da, char *b
         }
         else
         {
-            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+            sprintf(buf, "%s%d\n", buf, (read_8bit_temp((status & 0x80), status))*1000);
         }
     }
     else
@@ -102,7 +102,7 @@ ssize_t themal_temp_max_get(struct device *dev, struct device_attribute *da, cha
         }
         else
         {
-            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+            sprintf(buf, "%s%d\n", buf, (read_8bit_temp((status & 0x80), status))*1000);
         }
     }
     else
@@ -154,7 +154,7 @@ ssize_t themal_temp_min_get(struct device *dev, struct device_attribute *da, cha
         }
         else
         {
-            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+            sprintf(buf, "%s%d\n", buf, (read_8bit_temp((status & 0x80), status))*1000);
         }
     }
     else
@@ -206,7 +206,7 @@ ssize_t themal_temp_crit_get(struct device *dev, struct device_attribute *da, ch
         }
         else
         {
-            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+            sprintf(buf, "%s%d\n", buf, (read_8bit_temp((status & 0x80), status))*1000);
         }
     }
     else
@@ -258,7 +258,7 @@ ssize_t themal_temp_lcrit_get(struct device *dev, struct device_attribute *da, c
         }
         else
         {
-            sprintf(buf, "%s%d\n", buf, read_8bit_temp((status & 0x80), status));
+            sprintf(buf, "%s%d\n", buf, (read_8bit_temp((status & 0x80), status))*1000);
         }
     }
     else

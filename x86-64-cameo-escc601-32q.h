@@ -12,7 +12,7 @@
 #include <linux/uaccess.h>
 #include <linux/string.h>
 
-#define DRIVER_VERSION  "1.0.0"
+#define DRIVER_VERSION  "1.0.1"
 
 struct i2c_adap {
 	int nr;
